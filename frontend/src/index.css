@@ -1,0 +1,87 @@
+:root {
+  --primary-color: #E30613; /* Ivry Red */
+  --secondary-color: #003366; /* Navy Blue */
+  --bg-color: #f8fafc;
+  --sidebar-bg: #FFFFFF;
+  --text-color: #0f172a;
+  --border-color: #e2e8f0;
+  --white: #FFFFFF;
+  --header-height: 70px;
+  --sidebar-width: 320px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar Style from AppDSI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Utility classes */
+.btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(227, 6, 19, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: #c40510;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(227, 6, 19, 0.3);
+}
+
+.btn-secondary {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+  color: var(--secondary-color);
+}
+
+.card {
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
