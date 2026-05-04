@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { 
-  Search, FileText, Folder, ChevronRight, ChevronDown, Edit3, Save, X, Image as ImageIcon, BookOpen, AlignLeft, AlignCenter, AlignRight, FolderPlus, FilePlus, Trash2, FileCode, Share2
+  Search, FileText, Folder, ChevronRight, ChevronDown, Edit3, Save, X, Image as ImageIcon, BookOpen, AlignLeft, AlignCenter, AlignRight, FolderPlus, FilePlus, Trash2, FileCode, Share2, ArrowUpDown
 } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -21,10 +21,11 @@ turndownService.addRule('img-width', {
   }
 });
 
-interface FileNode { name: string; type: 'file' | 'directory'; path: string; children?: FileNode[]; }
+interface FileNode { name: string; type: 'file' | 'directory'; path: string; createdAt?: string; children?: FileNode[]; }
 
 const WikiPage: React.FC = () => {
   const [tree, setTree] = useState<FileNode[]>([]);
+  const [sortMode, setSortMode] = useState<'name' | 'date'>('name');
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [activeFolder, setActiveFolder] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -271,7 +272,28 @@ const WikiPage: React.FC = () => {
     }
   };
 
-  const renderTree = (nodes: FileNode[]) => nodes.map(node => (
+  const sortNodes = (nodes: FileNode[]): FileNode[] => {
+    return [...nodes]
+      .sort((a, b) => {
+        // Toujours mettre les dossiers en premier
+        if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
+        
+        if (sortMode === 'name') {
+          return a.name.localeCompare(b.name);
+        } else {
+          // Tri par date de création (du plus récent au plus ancien)
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        }
+      })
+      .map(node => ({
+        ...node,
+        children: node.children ? sortNodes(node.children) : undefined
+      }));
+  };
+
+  const renderTree = (nodes: FileNode[]) => sortNodes(nodes).map(node => (
     <div key={node.path} style={{ marginLeft: '12px' }}>
       {node.type === 'directory' ? (
         <div className="tree-node"
@@ -377,6 +399,17 @@ const WikiPage: React.FC = () => {
             <div className="sidebar-header">
               <span>PROCÉDURES</span>
               <div style={{ display: 'flex', gap: '6px' }}>
+                <button 
+                  className={`sidebar-action-btn ${sortMode === 'date' ? 'active-sort' : ''}`} 
+                  onClick={() => {
+                    const next = sortMode === 'name' ? 'date' : 'name';
+                    setSortMode(next);
+                    showNotify(`Tri par ${next === 'name' ? 'nom' : 'date'}`, 'info');
+                  }} 
+                  title={`Trier par ${sortMode === 'name' ? 'date' : 'nom'}`}
+                >
+                  <ArrowUpDown size={16}/>
+                </button>
                 <label className="sidebar-action-btn" title={`Importer Word dans ${activeFolder || 'la racine'}`}>
                   <FileCode size={16}/>
                   <input type="file" hidden accept=".docx" onChange={handleWordImportDirect} />
@@ -576,6 +609,7 @@ const WikiPage: React.FC = () => {
         .sidebar-header { padding: 15px; border-bottom: 1px solid #f1f5f9; font-weight: 800; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
         .sidebar-action-btn { background: #fff1f2; color: #E30613; border: none; padding: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .sidebar-action-btn:hover { background: #E30613; color: white; transform: scale(1.1); }
+        .sidebar-action-btn.active-sort { background: #003366; color: white; }
         .tree-container { flex: 1; overflow-y: auto; padding: 10px; }
         .tree-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 15px; cursor: pointer; border-radius: 12px; font-weight: 600; font-size: 14px; color: #475569; margin-bottom: 4px; transition: all 0.2s; }
         .tree-item-content { display: flex; align-items: center; gap: 10px; flex: 1; }

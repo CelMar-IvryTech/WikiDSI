@@ -50,13 +50,15 @@ app.get('/api/tree', async (req, res) => {
                         name: file,
                         type: 'directory',
                         path: relativePath.replace(/\\/g, '/'),
+                        createdAt: stats.birthtime,
                         children: await getTree(filePath)
                     });
                 } else if (file.endsWith('.md')) {
                     tree.push({
                         name: file,
                         type: 'file',
-                        path: relativePath.replace(/\\/g, '/')
+                        path: relativePath.replace(/\\/g, '/'),
+                        createdAt: stats.birthtime
                     });
                 }
             }

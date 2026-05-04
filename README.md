@@ -12,6 +12,7 @@ WikiDSI est une application moderne et intuitive conçue pour centraliser, crée
 
 ### 📁 Organisation & Structure
 - **Arborescence Dynamique** : Gérez vos dossiers et fichiers avec une interface fluide.
+- **Tri Personnalisé** : Ordonnez vos procédures par ordre alphabétique ou par date de création (du plus récent au plus ancien) en un clic.
 - **Drag & Drop** : Déplacez facilement vos procédures ou dossiers complets par simple glisser-déposer.
 - **Corbeille Sécurisée** : Les fichiers supprimés sont horodatés et déplacés vers un dossier `trash` pour éviter toute perte accidentelle.
 
