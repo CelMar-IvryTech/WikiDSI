@@ -26,6 +26,7 @@ interface FileNode { name: string; type: 'file' | 'directory'; path: string; cre
 const WikiPage: React.FC = () => {
   const [tree, setTree] = useState<FileNode[]>([]);
   const [sortMode, setSortMode] = useState<'name' | 'date'>('name');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [activeFolder, setActiveFolder] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -293,6 +294,25 @@ const WikiPage: React.FC = () => {
       }));
   };
 
+  const filterTree = (nodes: FileNode[]): FileNode[] => {
+    return nodes
+      .map(node => {
+        if (node.type === 'directory') {
+          const filteredChildren = node.children ? filterTree(node.children) : [];
+          const matches = node.name.toLowerCase().includes(searchTerm.toLowerCase());
+          if (matches || filteredChildren.length > 0) {
+            return { ...node, children: filteredChildren };
+          }
+        } else {
+          if (node.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return node;
+          }
+        }
+        return null;
+      })
+      .filter((node): node is FileNode => node !== null);
+  };
+
   const renderTree = (nodes: FileNode[]) => sortNodes(nodes).map(node => (
     <div key={node.path} style={{ marginLeft: '12px' }}>
       {node.type === 'directory' ? (
@@ -319,7 +339,7 @@ const WikiPage: React.FC = () => {
               <button className="delete-btn" onClick={(e) => handleDelete(e, node.path)}><Trash2 size={14}/></button>
             </div>
           </div>
-          {expandedFolders.has(node.path) && node.children && <div>{renderTree(node.children)}</div>}
+          {(expandedFolders.has(node.path) || searchTerm) && node.children && <div>{renderTree(node.children)}</div>}
         </div>
       ) : (
         <div className={`tree-item file ${selectedFile === node.path ? 'active' : ''}`} 
@@ -422,7 +442,21 @@ const WikiPage: React.FC = () => {
                 </button>
               </div>
             </div>
-            <div className="tree-container">{renderTree(tree)}</div>
+
+            <div className="sidebar-search">
+              <div className="search-input-wrapper">
+                <Search size={16} className="search-icon" />
+                <input 
+                  type="text" 
+                  placeholder="Rechercher..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && <button className="clear-search" onClick={() => setSearchTerm('')}><X size={14}/></button>}
+              </div>
+            </div>
+
+            <div className="tree-container">{renderTree(filterTree(tree))}</div>
           </div>
         </aside>
 
@@ -610,6 +644,15 @@ const WikiPage: React.FC = () => {
         .sidebar-action-btn { background: #fff1f2; color: #E30613; border: none; padding: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .sidebar-action-btn:hover { background: #E30613; color: white; transform: scale(1.1); }
         .sidebar-action-btn.active-sort { background: #003366; color: white; }
+
+        .sidebar-search { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+        .search-input-wrapper { position: relative; display: flex; align-items: center; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; transition: all 0.2s; }
+        .search-input-wrapper:focus-within { border-color: #E30613; background: white; box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.1); }
+        .search-icon { position: absolute; left: 12px; color: #94a3b8; pointer-events: none; }
+        .search-input-wrapper input { width: 100%; border: none; background: transparent; padding: 10px 35px 10px 35px; font-size: 13px; font-weight: 600; color: #1e293b; outline: none; }
+        .clear-search { position: absolute; right: 10px; background: #e2e8f0; border: none; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; padding: 0; }
+        .clear-search:hover { background: #f43f5e; color: white; }
+
         .tree-container { flex: 1; overflow-y: auto; padding: 10px; }
         .tree-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 15px; cursor: pointer; border-radius: 12px; font-weight: 600; font-size: 14px; color: #475569; margin-bottom: 4px; transition: all 0.2s; }
         .tree-item-content { display: flex; align-items: center; gap: 10px; flex: 1; }
