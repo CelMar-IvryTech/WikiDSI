@@ -175,10 +175,67 @@ app.post('/api/delete', async (req, res) => {
     }
 });
 
-app.post('/api/upload', upload.single('image'), (req, res) => {
+/**
+ * Déplacer (Renommer) un fichier ou dossier
+ */
+app.post('/api/move', async (req, res) => {
+    const { oldPath, newPath } = req.body;
+    if (!oldPath || !newPath) return res.status(400).json({ error: 'Chemins manquants' });
+
+    try {
+        const resolvedDocsDir = path.resolve(DOCS_DIR).toLowerCase();
+        const fullOldPath = path.resolve(path.join(DOCS_DIR, oldPath));
+        const fullNewPath = path.resolve(path.join(DOCS_DIR, newPath));
+        
+        console.log(`Déplacement: "${fullOldPath}" -> "${fullNewPath}"`);
+
+        // Sécurité : Empecher de sortir du dossier docs (insensible à la casse pour Windows)
+        if (!fullOldPath.toLowerCase().startsWith(resolvedDocsDir) || !fullNewPath.toLowerCase().startsWith(resolvedDocsDir)) {
+            return res.status(403).json({ error: 'Accès interdit : Hors du répertoire autorisé' });
+        }
+
+        if (!(await fs.pathExists(fullOldPath))) {
+            return res.status(404).json({ error: `Source non trouvée : ${oldPath}` });
+        }
+
+        // Vérifier si la destination existe déjà
+        if (await fs.pathExists(fullNewPath)) {
+            return res.status(400).json({ error: 'Un élément porte déjà ce nom à destination' });
+        }
+
+        // S'assurer que le dossier parent de destination existe
+        await fs.ensureDir(path.dirname(fullNewPath));
+
+        await fs.move(fullOldPath, fullNewPath);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Erreur déplacement détaillée:', error);
+        res.status(500).json({ 
+            error: 'Erreur lors du déplacement', 
+            details: error.message 
+        });
+    }
+});
+
+app.post('/api/upload', upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Aucun fichier' });
-    const imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
-    res.json({ url: imageUrl });
+    
+    const { folderPath } = req.body;
+    let finalUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+
+    if (folderPath) {
+        try {
+            const targetDir = path.join(UPLOADS_DIR, folderPath);
+            await fs.ensureDir(targetDir);
+            const newPath = path.join(targetDir, req.file.filename);
+            await fs.move(req.file.path, newPath);
+            finalUrl = `http://localhost:${PORT}/uploads/${folderPath}/${req.file.filename}`;
+        } catch (err) {
+            console.error('Erreur organisation image:', err);
+        }
+    }
+    
+    res.json({ url: finalUrl });
 });
 
 app.post('/api/convert-docx', upload.single('word'), async (req, res) => {

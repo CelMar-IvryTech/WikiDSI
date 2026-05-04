@@ -28,8 +28,6 @@ Admin Réseau
 
 Pour ajouter une image, passez en mode **Modifier** et cliquez sur le bouton **Image**.
 
-<img src="http://localhost:3001/uploads/1777027429842-593923085.jpg" width="46%" style="" />
-
-test
+<img src="http://localhost:3001/uploads/1777027429842-593923085.jpg" width="20%" style="" />test
 
 okok

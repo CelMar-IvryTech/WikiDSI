@@ -4,21 +4,11 @@ A vérifier dans l’AD : Si l’agent fait bien parti de ce groupe.
 
 Vérification ici dans la console « **MMC** »
 
-<img src="http://localhost:3001/uploads/1777533928881-934682550.png" width="" style="" />
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
 
-Menu « Démarrer » tapez « **mmc.** » puis cliquez dessus pour l’ouvrir.
+<img src="http://localhost:3001/uploads/1777533928881-934682550.png" width="" style="" />Menu « Démarrer » tapez « **mmc.** » puis cliquez dessus pour l’ouvrir.
 
-<img src="http://localhost:3001/uploads/1777533928883-576031910.png" width="" style="" />
-
-<img src="http://localhost:3001/uploads/1777533928885-398815525.png" width="" style="" />
-
-<img src="http://localhost:3001/uploads/1777533928886-392192550.png" width="" style="" />
-
-<img src="http://localhost:3001/uploads/1777533928887-996349572.png" width="" style="" />
-
-<img src="http://localhost:3001/uploads/1777533928889-335808850.png" width="" style="" />
-
-Dépliez **Certificats – Utilisateur actuel** puis **Personnel** puis cliquez sur « **Certificats** ».
+<img src="http://localhost:3001/uploads/1777533928883-576031910.png" width="" style="" /><img src="http://localhost:3001/uploads/1777533928885-398815525.png" width="" style="" /><img src="http://localhost:3001/uploads/1777533928886-392192550.png" width="" style="" /><img src="http://localhost:3001/uploads/1777533928887-996349572.png" width="" style="" /><img src="http://localhost:3001/uploads/1777533928889-335808850.png" width="" style="" />Dépliez **Certificats – Utilisateur actuel** puis **Personnel** puis cliquez sur « **Certificats** ».
 
 Un certificat avec les noms et prénoms de l’agent et la mention « **AlwaysOnVPN-Users** » devrait apparaitre.
 
@@ -26,14 +16,10 @@ Groupe AD ordinateur : **Ordinateurs – AOVPN** => Configuration du V
 
 A vérifier dans l’AD : Si l’ordinateur portable fait bien parti de ce groupe
 
-<img src="http://localhost:3001/uploads/1777533928891-572161582.png" width="" style="" />
-
-Au besoin, le rajouter dans le groupe « **Ordinateurs – AOVPN** » puis faire un gpupdate /force pour faire remonter la configuration sur le poste.
+<img src="http://localhost:3001/uploads/1777533928891-572161582.png" width="" style="" />Au besoin, le rajouter dans le groupe « **Ordinateurs – AOVPN** » puis faire un gpupdate /force pour faire remonter la configuration sur le poste.
 
 Vérification dans : C:\\ProgramData\\Microsoft\\Network\\Connections
 
 Présence du dossier « **pbk** »
 
-<img src="http://localhost:3001/uploads/1777533928893-23787946.png" width="" style="" />
-
-Si besoin de faire remonter les informations, faire un **gpupdate /force** et redémarrez le Pc.
+<img src="http://localhost:3001/uploads/1777533928893-23787946.png" width="" style="" />Si besoin de faire remonter les informations, faire un **gpupdate /force** et redémarrez le Pc.
