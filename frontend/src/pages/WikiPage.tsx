@@ -382,8 +382,8 @@ const WikiPage: React.FC = () => {
       .filter((node): node is FileNode => node !== null);
   };
 
-  const renderTree = (nodes: FileNode[]) => sortNodes(nodes).map(node => (
-    <div key={node.path} style={{ marginLeft: '8px' }}>
+  const renderTree = (nodes: FileNode[], level = 0) => sortNodes(nodes).map(node => (
+    <div key={node.path} style={{ marginLeft: level === 0 ? '0' : '14px' }}>
       {node.type === 'directory' ? (
         <div className="tree-node"
              onDragOver={onDragOver}
@@ -409,7 +409,7 @@ const WikiPage: React.FC = () => {
               <button className="delete-btn" onClick={(e) => handleDelete(e, node.path)}><Trash2 size={14}/></button>
             </div>
           </div>
-          {(expandedFolders.has(node.path) || searchTerm) && node.children && <div>{renderTree(node.children)}</div>}
+          {(expandedFolders.has(node.path) || searchTerm) && node.children && <div>{renderTree(node.children, level + 1)}</div>}
         </div>
       ) : (
         <div className={`tree-item file ${selectedFile === node.path ? 'active' : ''}`} 
