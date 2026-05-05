@@ -962,6 +962,8 @@ const WikiPage: React.FC = () => {
             width: 100%;
             margin-left: 0;
             margin-right: 0;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
         .markdown-body pre {
             white-space: pre-wrap;
@@ -969,7 +971,7 @@ const WikiPage: React.FC = () => {
             background: #f1f5f9;
             padding: 15px;
             border-radius: 8px;
-            margin: 15px 0;
+            margin: 10px 0;
             overflow-x: auto;
         }
         .markdown-body code {
@@ -986,7 +988,7 @@ const WikiPage: React.FC = () => {
             box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); 
             border: 1px solid #cbd5e1;
             cursor: pointer;
-            margin: 15px 0;
+            margin: 5px 0;
             display: inline-block;
         }
         .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
