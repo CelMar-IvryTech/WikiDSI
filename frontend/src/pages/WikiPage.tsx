@@ -826,7 +826,7 @@ const WikiPage: React.FC = () => {
         .content-inner { height: 100%; display: flex; flex-direction: column; }
         .document-card { flex: 1; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .doc-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
-        .breadcrumb { font-weight: 800; color: #94a3b8; font-size: 11px; text-transform: uppercase; }
+        .breadcrumb { font-weight: 800; color: #94a3b8; font-size: 11px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
         
         .editing-toolbar, .viewing-toolbar { display: flex; align-items: center; gap: 10px; }
         .action-btn-horizontal { height: 40px; white-space: nowrap; }
