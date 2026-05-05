@@ -834,7 +834,7 @@ const WikiPage: React.FC = () => {
         .document-card { flex: 1; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .doc-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
         .breadcrumb { color: #94a3b8; display: flex; align-items: center; gap: 4px; padding: 0; margin: 0; }
-        .breadcrumb-folder { font-weight: 500; font-size: 14px; text-transform: uppercase; opacity: 0.7; }
+        .breadcrumb-folder { font-weight: 600; font-size: 14px; text-transform: uppercase; opacity: 0.85; color: #64748b; }
         .breadcrumb-file { font-weight: 600; font-size: 18px; color: #1e293b; text-transform: none; margin-left: 4px; }
         .breadcrumb-separator { font-weight: 400; font-size: 14px; margin: 0 4px; opacity: 0.5; }
         
