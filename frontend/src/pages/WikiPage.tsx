@@ -801,7 +801,7 @@ const WikiPage: React.FC = () => {
             max-width: 100%; 
             height: auto;
             border-radius: 12px; 
-            box-shadow: 0 15px 45px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.1); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); 
             border: 1px solid #cbd5e1;
             cursor: pointer;
             margin: 30px 0;

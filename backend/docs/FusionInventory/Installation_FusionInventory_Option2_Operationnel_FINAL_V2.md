@@ -1,59 +1,55 @@
-Installation via l’agent FusionInventory
+Installation via l’agent FusionInventory
 
-_Depuis l’interface GLPI, naviguer dans les menus afin d’accéder au module FusionInventory._
+_Depuis l’interface GLPI, naviguer dans les menus afin d’accéder au module FusionInventory._
 
-## Étape 1 – Accéder au module FusionInventory
+## Étape 1 – Accéder au module FusionInventory
 
-<img src="http://localhost:3001/uploads/1777893977165-149233284.png" width="" style="" />
+![](http://localhost:3001/uploads/1777893977165-149233284.png)
 
-Cliquer sur l’onglet “Administration” puis “FusionInventory”
+Cliquer sur l’onglet “Administration” puis “FusionInventory”
 
-## Étape 2 – Accéder aux groupes
+## Étape 2 – Sélection du groupe
 
-<img src="http://localhost:3001/uploads/1777893977168-108502135.png" width="" style="" />
+![](http://localhost:3001/uploads/1777893977168-108502135.png)
 
-_Dans l’onglet “Général” de FusionInventory, cliquer sur “Groupe d’ordinateurs”_
+_Dans l’onglet “Général” de FusionInventory, cliquer sur “Groupe d’ordinateurs”_
 
-## Étape 3 – Sélection du groupe
+![](http://localhost:3001/uploads/1777893977171-765965578.png)
 
-<img src="http://localhost:3001/uploads/1777893977171-765965578.png" width="" style="" />
+_Sélectionner le groupe correspondant aux postes sur lesquels l’agent FusionInventory doit être appliqué._
 
-_Sélectionner le groupe correspondant aux postes sur lesquels l’agent FusionInventory doit être appliqué._
+## Étape 3 – Accéder à l’onglet Critères
 
-## Étape 4 – Accéder à l’onglet Critères
+![](http://localhost:3001/uploads/1777893977174-839429860.png)
 
-<img src="http://localhost:3001/uploads/1777893977174-839429860.png" width="" style="" />
+Aller dans l’onglet « **Critères** » puis rechercher l’ordinateur cible
 
-Allez dans l’onglet « **Critères** » puis rechercher l’ordinateur cible
+![](http://localhost:3001/uploads/1777893977176-949622736.png)
 
-<img src="http://localhost:3001/uploads/1777893977176-949622736.png" width="" style="" />
+Cochez la case de l’ordinateur cible puis cliquez sur Actions
 
-Cochez la case de l’ordinateur cible puis cliquez sur Actions
+![](http://localhost:3001/uploads/1777893977180-238778364.png)
 
-<img src="http://localhost:3001/uploads/1777893977180-238778364.png" width="" style="" />
+![](http://localhost:3001/uploads/1777893977183-841884506.png)
 
-<img src="http://localhost:3001/uploads/1777893977183-841884506.png" width="" style="" />
+Séléctionner l’action “Ajouter” et cliquer sur “Ajouter”
 
-Séléctionner l’action “Ajouter” et cliquer sur “Ajouter”
+![](http://localhost:3001/uploads/1777893977185-947412144.png)![](http://localhost:3001/uploads/1777893977188-165895112.png)
 
-<img src="http://localhost:3001/uploads/1777893977185-947412144.png" width="" style="" /><img src="http://localhost:3001/uploads/1777893977188-165895112.png" width="" style="" />
+Le message de succès doit s’ouvrir dans une petite fenètre “Information”
 
-Le message de succès doit s’ouvrir dans une petite fenètre “Information”
+## Étape 5 – Vérifier l’ajout de l’élément
 
-## Étape 5 – Vérifier l’ajout de l’élément
+![](http://localhost:3001/uploads/1777893977191-207474819.png)
 
-<img src="http://localhost:3001/uploads/1777893977191-207474819.png" width="" style="" />
+Se rendre dans l’onglet « **Eléments rattachés** »
 
-Se rendre dans l’onglet « **Eléments rattachés** »
+![](http://localhost:3001/uploads/1777893977194-941450707.png)
 
-<img src="http://localhost:3001/uploads/1777893977194-941450707.png" width="" style="" />
+En effectuant une recherche (Ctrl + F) nous retrouvons notre Pc dans la liste
 
-En effectuant une recherche (Ctrl + F) nous retrouvons notre Pc dans la liste
+![](http://localhost:3001/uploads/1777893977197-751756313.png)
 
-<img src="http://localhost:3001/uploads/1777893977197-751756313.png" width="" style="" />
+Cliquez sur l’élément et forcer le déploiement via l’agent « FusionInventory »
 
-Cliquez sur l’élément et forcer le déploiement via l’agent « FusionInventory »
-
-<img src="http://localhost:3001/uploads/1777893977200-596464535.png" width="" style="" />
-
-<img src="http://localhost:3001/uploads/1777893977203-239687021.png" width="" style="" />
+![](http://localhost:3001/uploads/1777893977200-596464535.png)![](http://localhost:3001/uploads/1777893977203-239687021.png)
