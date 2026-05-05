@@ -383,7 +383,7 @@ const WikiPage: React.FC = () => {
   };
 
   const renderTree = (nodes: FileNode[]) => sortNodes(nodes).map(node => (
-    <div key={node.path} style={{ marginLeft: '12px' }}>
+    <div key={node.path} style={{ marginLeft: '8px' }}>
       {node.type === 'directory' ? (
         <div className="tree-node"
              onDragOver={onDragOver}
@@ -796,7 +796,7 @@ const WikiPage: React.FC = () => {
         .tree-item:hover { background: #f8fafc; }
         .tree-item.active { background: #f1f5f9; color: #E30613; }
         .tree-item.active-folder { background: #fff1f2; border: 1px solid #ffe4e6; }
-        .tree-item-actions { display: flex; align-items: center; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+        .tree-item-actions { display: flex; align-items: center; gap: 2px; opacity: 0; transition: opacity 0.2s; }
         .tree-item:hover .tree-item-actions { opacity: 1; }
         .action-btn-mini { background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 6px; display: flex; }
         .action-btn-mini:hover { background: #fff1f2; color: #E30613; }
@@ -806,7 +806,7 @@ const WikiPage: React.FC = () => {
         .toc-sidebar .sidebar-inner { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .toc-container { flex: 1; overflow-y: auto; padding: 10px; }
         .toc-item { 
-            padding: 8px 12px; 
+            padding: 4px 8px; 
             font-size: 13px; 
             font-weight: 600; 
             color: #64748b; 
@@ -814,12 +814,12 @@ const WikiPage: React.FC = () => {
             border-radius: 8px; 
             transition: all 0.2s;
             line-height: 1.4;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
-        .toc-item:hover { background: #f1f5f9; color: #E30613; padding-left: 18px; }
-        .toc-item.level-1 { font-weight: 800; color: #1e293b; border-bottom: 1px solid #f1f5f9; margin-bottom: 8px; padding-bottom: 8px; font-size: 14px; }
-        .toc-item.level-2 { margin-left: 10px; }
-        .toc-item.level-3 { margin-left: 20px; font-size: 12px; opacity: 0.8; }
+        .toc-item:hover { background: #f1f5f9; color: #E30613; padding-left: 12px; }
+        .toc-item.level-1 { font-weight: 800; color: #1e293b; border-bottom: 1px solid #f1f5f9; margin-bottom: 4px; padding-bottom: 4px; font-size: 13.5px; }
+        .toc-item.level-2 { margin-left: 6px; }
+        .toc-item.level-3 { margin-left: 12px; font-size: 12px; opacity: 0.8; }
         .toc-empty { padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; font-style: italic; }
         
         .content { flex: 1; height: 100%; overflow: hidden; margin-right: 0; }
