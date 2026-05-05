@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { 
-  Search, FileText, Folder, ChevronRight, ChevronDown, Edit3, Save, X, Image as ImageIcon, BookOpen, AlignLeft, AlignCenter, AlignRight, FolderPlus, FilePlus, Trash2, FileCode, Share2, ArrowUpDown
+  Search, FileText, Folder, ChevronRight, Edit3, Save, X, Image as ImageIcon, BookOpen, AlignLeft, AlignCenter, AlignRight, FolderPlus, FilePlus, Trash2, FileCode, Share2, ArrowUpDown, Edit2
 } from 'lucide-react';
+
+import { marked } from 'marked';
+import TurndownService from 'turndown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import TurndownService from 'turndown';
-import { marked } from 'marked';
 
 const API_BASE = 'http://localhost:3001/api';
 
-const turndownService = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced' });
-turndownService.addRule('img-width', {
-  filter: 'img',
-  replacement: (content, node: any) => {
-    const src = node.getAttribute('src') || '';
-    const width = node.getAttribute('width') || node.style.width || '';
-    const style = node.getAttribute('style') || '';
-    return `<img src="${src}" width="${width}" style="${style}" />`;
-  }
+const turndownService = new TurndownService({
+  headingStyle: 'atx',
+  codeBlockStyle: 'fenced'
+});
+
+marked.setOptions({
+    breaks: true,
+    gfm: true
 });
 
 interface FileNode { name: string; type: 'file' | 'directory'; path: string; createdAt?: string; children?: FileNode[]; }
@@ -30,6 +30,7 @@ const WikiPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [activeFolder, setActiveFolder] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState({ show: false, oldPath: '', oldName: '' });
   const [showMarkdown, setShowMarkdown] = useState(false);
   const [splitWidth, setSplitWidth] = useState(50); // Pourcentage de l'éditeur visuel
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
@@ -87,6 +88,30 @@ const WikiPage: React.FC = () => {
         }
       }
     );
+  };
+
+  const handleRename = async () => {
+    if (!newName) return;
+    const isDirectory = !showRenameModal.oldPath.endsWith('.md');
+    let finalNewName = newName;
+    if (!isDirectory && !finalNewName.endsWith('.md')) finalNewName += '.md';
+    
+    const parentPath = showRenameModal.oldPath.includes('/') 
+      ? showRenameModal.oldPath.substring(0, showRenameModal.oldPath.lastIndexOf('/')) 
+      : '';
+    const newPath = parentPath ? `${parentPath}/${finalNewName}` : finalNewName;
+
+    try {
+      await axios.post(`${API_BASE}/move`, { oldPath: showRenameModal.oldPath, newPath: newPath });
+      fetchTree();
+      if (selectedFile === showRenameModal.oldPath) setSelectedFile(newPath);
+      setShowRenameModal({ show: false, oldPath: '', oldName: '' });
+      setNewName('');
+      showNotify('Élément renommé', 'success');
+    } catch (err: unknown) {
+      const errorMessage = axios.isAxiosError(err) ? err.response?.data?.error : 'Erreur lors du renommage';
+      showNotify(errorMessage || 'Erreur lors du renommage', 'error');
+    }
   };
 
   const fetchTree = async () => {
@@ -334,6 +359,7 @@ const WikiPage: React.FC = () => {
               <span>{node.name}</span>
             </div>
             <div className="tree-item-actions">
+              <button className="action-btn-mini" onClick={(e) => { e.stopPropagation(); setShowRenameModal({show: true, oldPath: node.path, oldName: node.name}); }} title="Renommer"><Edit2 size={14}/></button>
               <button className="action-btn-mini" onClick={(e) => { e.stopPropagation(); setShowCreateModal({show: true, type: 'file', parent: node.path}); }} title="Nouveau fichier ici"><FilePlus size={14}/></button>
               <button className="action-btn-mini" onClick={(e) => { e.stopPropagation(); setShowCreateModal({show: true, type: 'folder', parent: node.path}); }} title="Nouveau dossier ici"><FolderPlus size={14}/></button>
               <button className="delete-btn" onClick={(e) => handleDelete(e, node.path)}><Trash2 size={14}/></button>
@@ -349,7 +375,10 @@ const WikiPage: React.FC = () => {
           <div className="tree-item-content">
             <FileText size={18} /><span>{node.name.replace('.md', '')}</span>
           </div>
-          <button className="delete-btn" onClick={(e) => handleDelete(e, node.path)}><Trash2 size={14}/></button>
+          <div className="tree-item-actions">
+            <button className="action-btn-mini" onClick={(e) => { e.stopPropagation(); setShowRenameModal({show: true, oldPath: node.path, oldName: node.name}); }} title="Renommer"><Edit2 size={14}/></button>
+            <button className="delete-btn" onClick={(e) => handleDelete(e, node.path)}><Trash2 size={14}/></button>
+          </div>
         </div>
       )}
     </div>
@@ -602,6 +631,24 @@ const WikiPage: React.FC = () => {
                 }
             }}>Créer</button>
             <button className="btn-secondary" style={{ width: '100%', marginTop: '10px' }} onClick={() => setShowCreateModal({show: false, type: 'file', parent: ''})}>Annuler</button>
+          </div>
+        </div>
+      )}
+
+      {showRenameModal.show && (
+        <div className="modal-overlay">
+          <div className="premium-modal">
+            <h3>Renommer</h3>
+            <div className="modal-context">📍 Ancien nom : {showRenameModal.oldName}</div>
+            <input 
+              value={newName} 
+              onChange={e => setNewName(e.target.value)} 
+              autoFocus 
+              placeholder="Nouveau nom..." 
+              onKeyDown={(e) => { if (e.key === 'Enter') handleRename(); }}
+            />
+            <button className="btn-primary-premium" onClick={handleRename}>Renommer</button>
+            <button className="btn-secondary" style={{ width: '100%', marginTop: '10px' }} onClick={() => { setShowRenameModal({show: false, oldPath: '', oldName: ''}); setNewName(''); }}>Annuler</button>
           </div>
         </div>
       )}
