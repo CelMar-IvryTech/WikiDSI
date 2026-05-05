@@ -804,7 +804,7 @@ const WikiPage: React.FC = () => {
             box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3); 
             border: 1px solid #cbd5e1;
             cursor: pointer;
-            margin: 30px 0;
+            margin: 15px 0;
             display: inline-block;
         }
         .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
