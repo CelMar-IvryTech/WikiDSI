@@ -39,8 +39,10 @@ const WikiPage: React.FC = () => {
   const [originalContentHTML, setOriginalContentHTML] = useState('');
   const [originalContentMD, setOriginalContentMD] = useState('');
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(['']));
+  const [toc, setToc] = useState<{ text: string, level: number, index: number }[]>([]);
   const quillRef = useRef<any>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const syncLock = useRef(false);
 
   // --- Système de Notifications ---
@@ -61,7 +63,29 @@ const WikiPage: React.FC = () => {
       const markdown = turndownService.turndown(editContentHTML);
       if (markdown !== editContentMD) setEditContentMD(markdown);
     }
+    
+    // Extraction du sommaire (TOC)
+    if (!isEditing && editContentHTML) {
+      const doc = new DOMParser().parseFromString(editContentHTML, 'text/html');
+      const headings = Array.from(doc.querySelectorAll('h1, h2, h3'));
+      setToc(headings.map((h, i) => ({
+        text: h.textContent || '',
+        level: parseInt(h.tagName.substring(1)),
+        index: i
+      })));
+    } else {
+      setToc([]);
+    }
   }, [editContentHTML, isEditing]);
+
+  const scrollToHeading = (index: number) => {
+    if (contentRef.current) {
+      const headings = contentRef.current.querySelectorAll('h1, h2, h3');
+      if (headings[index]) {
+        headings[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
 
   const handleMDChange = async (md: string) => {
     setEditContentMD(md);
@@ -590,6 +614,7 @@ const WikiPage: React.FC = () => {
                 ) : (
                   <div className="scrollable-container">
                     <div 
+                      ref={contentRef}
                       className="markdown-body"
                       dangerouslySetInnerHTML={{ __html: editContentHTML }}
                     />
@@ -601,6 +626,29 @@ const WikiPage: React.FC = () => {
             )}
           </div>
         </main>
+
+        <aside className="sidebar toc-sidebar">
+            <div className="sidebar-inner">
+                <div className="sidebar-header">
+                    <span>SOMMAIRE</span>
+                </div>
+                <div className="toc-container">
+                    {toc.length > 0 ? (
+                        toc.map((item, i) => (
+                            <div 
+                                key={i} 
+                                className={`toc-item level-${item.level}`}
+                                onClick={() => scrollToHeading(item.index)}
+                            >
+                                {item.text}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="toc-empty">Aucun titre détecté</div>
+                    )}
+                </div>
+            </div>
+        </aside>
       </div>
 
       {showCreateModal.show && (
@@ -712,6 +760,25 @@ const WikiPage: React.FC = () => {
         .action-btn-mini:hover { background: #fff1f2; color: #E30613; }
         .delete-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s; display: flex; }
         .delete-btn:hover { background: #fff1f2; color: #E30613; }
+        .toc-sidebar { width: 220px; flex-shrink: 0; }
+        .toc-container { flex: 1; overflow-y: auto; padding: 10px; }
+        .toc-item { 
+            padding: 8px 12px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #64748b; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            transition: all 0.2s;
+            line-height: 1.4;
+            margin-bottom: 2px;
+        }
+        .toc-item:hover { background: #f1f5f9; color: #E30613; padding-left: 18px; }
+        .toc-item.level-1 { font-weight: 800; color: #1e293b; border-bottom: 1px solid #f1f5f9; margin-bottom: 8px; padding-bottom: 8px; font-size: 14px; }
+        .toc-item.level-2 { margin-left: 10px; }
+        .toc-item.level-3 { margin-left: 20px; font-size: 12px; opacity: 0.8; }
+        .toc-empty { padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; font-style: italic; }
+        
         .content { flex: 1; height: 100%; overflow: hidden; }
         .content-inner { height: 100%; display: flex; flex-direction: column; }
         .document-card { flex: 1; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }

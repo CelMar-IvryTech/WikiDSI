@@ -26,15 +26,15 @@ Aller dans l’onglet « **Critères** » puis rechercher l’ordinateur
 
 ![](http://localhost:3001/uploads/1777893977176-949622736.png)
 
-Cochez la case de l’ordinateur cible puis cliquez sur Actions
-
 ![](http://localhost:3001/uploads/1777893977180-238778364.png)
+
+Cochez la case de l’ordinateur cible puis cliquez sur Actions
 
 ![](http://localhost:3001/uploads/1777893977183-841884506.png)
 
-Séléctionner l’action “Ajouter” et cliquer sur “Ajouter”
-
 ![](http://localhost:3001/uploads/1777893977185-947412144.png)
+
+Séléctionner l’action “Ajouter” et cliquer sur “Ajouter”
 
 ![](http://localhost:3001/uploads/1777893977188-165895112.png)
 
