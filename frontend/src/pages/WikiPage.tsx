@@ -790,8 +790,9 @@ const WikiPage: React.FC = () => {
         .clear-search:hover { background: #f43f5e; color: white; }
 
         .tree-container { flex: 1; overflow-y: auto; padding: 10px; }
-        .tree-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 15px; cursor: pointer; border-radius: 12px; font-weight: 600; font-size: 14px; color: #475569; margin-bottom: 4px; transition: all 0.2s; }
-        .tree-item-content { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .tree-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; cursor: pointer; border-radius: 12px; font-weight: 600; font-size: 13.5px; color: #475569; margin-bottom: 2px; transition: all 0.2s; min-width: 0; }
+        .tree-item-content { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .tree-item-content span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
         .tree-item:hover { background: #f8fafc; }
         .tree-item.active { background: #f1f5f9; color: #E30613; }
         .tree-item.active-folder { background: #fff1f2; border: 1px solid #ffe4e6; }
