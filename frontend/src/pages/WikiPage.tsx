@@ -5,6 +5,14 @@ import {
 } from 'lucide-react';
 
 import { marked } from 'marked';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+import 'prismjs/components/prism-powershell';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+
 import TurndownService from 'turndown';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
@@ -20,6 +28,42 @@ marked.setOptions({
     breaks: true,
     gfm: true
 });
+
+// Custom renderer for marked to handle syntax highlighting
+const renderer = new marked.Renderer();
+const originalCode = renderer.code.bind(renderer);
+renderer.code = function(code: string, language: string | undefined, isEscaped: boolean) {
+  if (language && Prism.languages[language]) {
+    try {
+      const highlighted = Prism.highlight(code, Prism.languages[language], language);
+      return `<pre class="language-${language}"><code class="language-${language}">${highlighted}</code></pre>`;
+    } catch (e) {
+      return originalCode(code, language, isEscaped);
+    }
+  }
+  return originalCode(code, language, isEscaped);
+};
+
+// Logic to parse callouts like [!INFO]
+const parseCallouts = (html: string) => {
+  const calloutMap: { [key: string]: { icon: string, class: string, label: string } } = {
+    'INFO': { icon: '🔵', class: 'callout-info', label: 'INFO' },
+    'WARNING': { icon: '⚠️', class: 'callout-warning', label: 'ATTENTION' },
+    'ATTENTION': { icon: '⚠️', class: 'callout-warning', label: 'ATTENTION' },
+    'TIP': { icon: '💡', class: 'callout-tip', label: 'ASTUCE' },
+    'ASTUCE': { icon: '💡', class: 'callout-tip', label: 'ASTUCE' },
+    'SUCCESS': { icon: '✅', class: 'callout-success', label: 'SUCCÈS' },
+    'SUCCÈS': { icon: '✅', class: 'callout-success', label: 'SUCCÈS' }
+  };
+
+  return html.replace(/<blockquote>\s*<p>\[!(INFO|WARNING|ATTENTION|TIP|ASTUCE|SUCCESS|SUCCÈS)\](.*?<\/p>.*?<\/blockquote>)/gs, (match, type, content) => {
+    const config = calloutMap[type.toUpperCase()];
+    return `<div class="callout ${config.class}">
+      <div class="callout-header">${config.icon} ${config.label}</div>
+      <div class="callout-content">${content.replace('</p>', '').trim()}</div>
+    </div>`;
+  });
+};
 
 interface FileNode { name: string; type: 'file' | 'directory'; path: string; createdAt?: string; children?: FileNode[]; }
 
@@ -95,7 +139,8 @@ const WikiPage: React.FC = () => {
     setEditContentMD(md);
     syncLock.current = true;
     const html = await marked.parse(md);
-    setEditContentHTML(typeof html === 'string' ? html : String(html));
+    const finalHTML = parseCallouts(typeof html === 'string' ? html : String(html));
+    setEditContentHTML(finalHTML);
     setTimeout(() => { syncLock.current = false; }, 100);
   };
 
@@ -991,6 +1036,70 @@ const WikiPage: React.FC = () => {
             margin: 5px 0;
             display: inline-block;
         }
+        .markdown-body hr {
+            height: 2px;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #e2e8f0;
+            border: 0;
+            border-radius: 2px;
+        }
+        .markdown-body table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .markdown-body table th {
+            font-weight: 700;
+            padding: 12px 15px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+            color: #475569;
+        }
+        .markdown-body table td {
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .markdown-body table tr:nth-child(2n) {
+            background-color: #fcfcfc;
+        }
+
+        /* Callouts */
+        .callout {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 5px solid;
+            background: #f8fafc;
+        }
+        .callout-header {
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .callout-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #475569;
+        }
+        .callout-info { border-left-color: #3b82f6; background: #eff6ff; }
+        .callout-info .callout-header { color: #1e40af; }
+        .callout-warning { border-left-color: #f59e0b; background: #fffbeb; }
+        .callout-warning .callout-header { color: #92400e; }
+        .callout-tip { border-left-color: #8b5cf6; background: #f5f3ff; }
+        .callout-tip .callout-header { color: #5b21b6; }
+        .callout-success { border-left-color: #10b981; background: #f0fdf4; }
+        .callout-success .callout-header { color: #065f46; }
+
         .btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; border: none; cursor: pointer; }
         .btn-primary { background: #E30613; color: white; }
         .btn-secondary { background: #f1f5f9; color: #475569; }

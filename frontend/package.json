@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@types/marked": "^5.0.2",
+    "@types/prismjs": "^1.26.6",
     "axios": "^1.15.2",
     "lucide-react": "^1.9.0",
     "marked": "^18.0.2",
+    "prismjs": "^1.30.0",
     "quill-image-resize-module-react": "^3.0.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
