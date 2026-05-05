@@ -1,8 +1,8 @@
 Installation via l’agent FusionInventory
 
-_Depuis l’interface GLPI, naviguer dans les menus afin d’accéder au module FusionInventory._
-
 ## Étape 1 – Accéder au module FusionInventory
+
+_Depuis l’interface GLPI, naviguer dans les menus afin d’accéder au module FusionInventory._
 
 ![](http://localhost:3001/uploads/1777893977165-149233284.png)
 

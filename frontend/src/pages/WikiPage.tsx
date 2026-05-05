@@ -891,6 +891,43 @@ const WikiPage: React.FC = () => {
         .sidebar { flex-shrink: 0; background: transparent; display: flex; flex-direction: column; }
         .sidebar.dragging { user-select: none; }
         .sidebar-inner { background: white; flex: 1; display: flex; flex-direction: column; }
+        .editor-side { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background: #f8fafc; position: relative; min-height: 0; }
+        
+        .custom-quill-toolbar {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 45px;
+        }
+        .custom-quill-toolbar button, .custom-quill-toolbar select {
+            border: 1px solid transparent !important;
+            background: transparent !important;
+            padding: 4px !important;
+            border-radius: 6px !important;
+            cursor: pointer !important;
+            color: #475569 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-quill-toolbar button:hover, .custom-quill-toolbar select:hover {
+            background: #f1f5f9 !important;
+            color: #E30613 !important;
+        }
+        .custom-quill-toolbar .ql-active {
+            color: #E30613 !important;
+            background: #fff1f2 !important;
+        }
+        .custom-quill-toolbar select {
+            font-size: 12px;
+            font-weight: 700;
+            outline: none;
+        }
+
         .side-label { padding: 8px 15px; font-size: 10px; font-weight: 900; color: #94a3b8; border-bottom: 1px solid #e2e8f0; background: white; flex-shrink: 0; }
         .quill { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
         .ql-container { flex: 1; overflow: hidden; display: flex; flex-direction: column; border: none !important; min-height: 0; }
