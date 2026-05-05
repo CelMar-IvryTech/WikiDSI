@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { 
   Search, FileText, Folder, ChevronRight, Edit3, Save, X, Image as ImageIcon, BookOpen, AlignLeft, AlignCenter, AlignRight, FolderPlus, FilePlus, Trash2, FileCode, Share2, ArrowUpDown, Edit2,
-  Table, Minus, Info, AlertTriangle, Lightbulb, CheckCircle
+  Table, Minus, Info, AlertTriangle, Lightbulb, CheckCircle, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen
 } from 'lucide-react';
 
 import { marked } from 'marked';
@@ -86,6 +86,8 @@ const WikiPage: React.FC = () => {
   const [isDraggingTOC, setIsDraggingTOC] = useState(false);
   const [explorerWidth, setExplorerWidth] = useState(280); // Largeur en pixels
   const [isDraggingExplorer, setIsDraggingExplorer] = useState(false);
+  const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(false);
+  const [isTOCCollapsed, setIsTOCCollapsed] = useState(false);
   const [editContentHTML, setEditContentHTML] = useState('');
   const [editContentMD, setEditContentMD] = useState('');
   const [originalContentHTML, setOriginalContentHTML] = useState('');
@@ -560,63 +562,80 @@ const WikiPage: React.FC = () => {
   return (
     <div className={`app-container ${isDraggingSplit ? 'dragging' : ''}`} onMouseMove={onGlobalMouseMove} onMouseUp={onGlobalMouseUp}>
       <header className="main-header">
+        <button 
+          className="sidebar-toggle-btn" 
+          onClick={() => setIsExplorerCollapsed(!isExplorerCollapsed)}
+          title={isExplorerCollapsed ? "Afficher l'explorateur" : "Masquer l'explorateur"}
+        >
+          {isExplorerCollapsed ? <PanelLeftOpen size={20} /> : <PanelLeftClose size={20} />}
+        </button>
         <div className="logo" onClick={() => setActiveFolder('')} style={{cursor:'pointer'}}><span className="logo-ivry">ivry</span><span className="logo-dsi"> - Wiki DSI</span></div>
-        <div className="version-badge">Premium Editor v2.4</div>
+        <div className="version-badge">Premium Editor v2.5</div>
         {activeFolder && (
           <div className="active-path-indicator">
             📍 Emplacement : <span>{activeFolder}</span>
             <button onClick={() => setActiveFolder('')} title="Revenir à la racine"><X size={12}/></button>
           </div>
         )}
+        <div style={{ marginLeft: 'auto' }}></div>
+        <button 
+          className="sidebar-toggle-btn" 
+          onClick={() => setIsTOCCollapsed(!isTOCCollapsed)}
+          title={isTOCCollapsed ? "Afficher le sommaire" : "Masquer le sommaire"}
+        >
+          {isTOCCollapsed ? <PanelRightOpen size={20} /> : <PanelRightClose size={20} />}
+        </button>
       </header>
 
       <div className="main-layout">
-        <aside className={`sidebar ${isDraggingExplorer ? 'dragging' : ''}`} style={{ width: `${explorerWidth}px`, position: 'relative', overflow: 'visible' }}>
-          <div className="sidebar-inner" style={{ borderRadius: '20px', border: '1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="sidebar-header">
-              <span>PROCÉDURES</span>
-              <div style={{ display: 'flex', gap: '6px' }}>
-                <button 
-                  className={`sidebar-action-btn ${sortMode === 'date' ? 'active-sort' : ''}`} 
-                  onClick={() => {
-                    const next = sortMode === 'name' ? 'date' : 'name';
-                    setSortMode(next);
-                    showNotify(`Tri par ${next === 'name' ? 'nom' : 'date'}`, 'info');
-                  }} 
-                  title={`Trier par ${sortMode === 'name' ? 'date' : 'nom'}`}
-                >
-                  <ArrowUpDown size={16}/>
-                </button>
-                <label className="sidebar-action-btn" title={`Importer Word dans ${activeFolder || 'la racine'}`}>
-                  <FileCode size={16}/>
-                  <input type="file" hidden accept=".docx" onChange={handleWordImportDirect} />
-                </label>
-                <button className="sidebar-action-btn" onClick={() => setShowCreateModal({show: true, type: 'folder', parent: activeFolder})} title={`Nouveau dossier dans ${activeFolder || 'la racine'}`}>
-                  <FolderPlus size={16}/>
-                </button>
-                <button className="sidebar-action-btn" onClick={() => setShowCreateModal({show: true, type: 'file', parent: activeFolder})} title={`Nouvelle procédure dans ${activeFolder || 'la racine'}`}>
-                  <FilePlus size={16}/>
-                </button>
+        {!isExplorerCollapsed && (
+          <aside className={`sidebar ${isDraggingExplorer ? 'dragging' : ''}`} style={{ width: `${explorerWidth}px`, position: 'relative', overflow: 'visible' }}>
+            <div className="sidebar-inner" style={{ borderRadius: '20px', border: '1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <div className="sidebar-header">
+                <span>PROCÉDURES</span>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button 
+                    className={`sidebar-action-btn ${sortMode === 'date' ? 'active-sort' : ''}`} 
+                    onClick={() => {
+                      const next = sortMode === 'name' ? 'date' : 'name';
+                      setSortMode(next);
+                      showNotify(`Tri par ${next === 'name' ? 'nom' : 'date'}`, 'info');
+                    }} 
+                    title={`Trier par ${sortMode === 'name' ? 'date' : 'nom'}`}
+                  >
+                    <ArrowUpDown size={16}/>
+                  </button>
+                  <label className="sidebar-action-btn" title={`Importer Word dans ${activeFolder || 'la racine'}`}>
+                    <FileCode size={16}/>
+                    <input type="file" hidden accept=".docx" onChange={handleWordImportDirect} />
+                  </label>
+                  <button className="sidebar-action-btn" onClick={() => setShowCreateModal({show: true, type: 'folder', parent: activeFolder})} title={`Nouveau dossier dans ${activeFolder || 'la racine'}`}>
+                    <FolderPlus size={16}/>
+                  </button>
+                  <button className="sidebar-action-btn" onClick={() => setShowCreateModal({show: true, type: 'file', parent: activeFolder})} title={`Nouvelle procédure dans ${activeFolder || 'la racine'}`}>
+                    <FilePlus size={16}/>
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="sidebar-search">
-              <div className="search-input-wrapper">
-                <Search size={16} className="search-icon" />
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..." 
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {searchTerm && <button className="clear-search" onClick={() => setSearchTerm('')}><X size={14}/></button>}
+              <div className="sidebar-search">
+                <div className="search-input-wrapper">
+                  <Search size={16} className="search-icon" />
+                  <input 
+                    type="text" 
+                    placeholder="Rechercher..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  {searchTerm && <button className="clear-search" onClick={() => setSearchTerm('')}><X size={14}/></button>}
+                </div>
               </div>
-            </div>
 
-            <div className="tree-container">{renderTree(filterTree(tree))}</div>
-          </div>
-          <div className="resizer-handle right-side" onMouseDown={() => setIsDraggingExplorer(true)}></div>
-        </aside>
+              <div className="tree-container">{renderTree(filterTree(tree))}</div>
+            </div>
+            <div className="resizer-handle right-side" onMouseDown={() => setIsDraggingExplorer(true)}></div>
+          </aside>
+        )}
 
         <main className="content">
           <div className="content-inner">
@@ -766,29 +785,31 @@ const WikiPage: React.FC = () => {
           </div>
         </main>
 
-        <aside className={`sidebar toc-sidebar ${isDraggingTOC ? 'dragging' : ''}`} style={{ width: `${tocWidth}px` }}>
-            <div className="resizer-handle left" onMouseDown={() => setIsDraggingTOC(true)}></div>
-            <div className="sidebar-inner">
-                <div className="sidebar-header">
-                    <span>SOMMAIRE</span>
-                </div>
-                <div className="toc-container">
-                    {toc.length > 0 ? (
-                        toc.map((item, i) => (
-                            <div 
-                                key={i} 
-                                className={`toc-item level-${item.level}`}
-                                onClick={() => scrollToHeading(item.index)}
-                            >
-                                {item.text}
-                            </div>
-                        ))
-                    ) : (
-                        <div className="toc-empty">Aucun titre détecté</div>
-                    )}
-                </div>
-            </div>
-        </aside>
+        {!isTOCCollapsed && (
+          <aside className={`sidebar toc-sidebar ${isDraggingTOC ? 'dragging' : ''}`} style={{ width: `${tocWidth}px`, marginLeft: '20px' }}>
+              <div className="resizer-handle left" onMouseDown={() => setIsDraggingTOC(true)}></div>
+              <div className="sidebar-inner" style={{ borderRadius: '20px', border: '1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div className="sidebar-header">
+                      <span>SOMMAIRE</span>
+                  </div>
+                  <div className="toc-container">
+                      {toc.length > 0 ? (
+                          toc.map((item, i) => (
+                              <div 
+                                  key={i} 
+                                  className={`toc-item level-${item.level}`}
+                                  onClick={() => scrollToHeading(item.index)}
+                              >
+                                  {item.text}
+                              </div>
+                          ))
+                      ) : (
+                          <div className="toc-empty">Aucun titre détecté</div>
+                      )}
+                  </div>
+              </div>
+          </aside>
+        )}
       </div>
 
       {showCreateModal.show && (
@@ -865,7 +886,9 @@ const WikiPage: React.FC = () => {
         body { margin: 0; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; background: #f8fafc; }
         .app-container.dragging { cursor: col-resize; user-select: none; }
         .app-container { display: flex; flex-direction: column; height: 100vh; }
-        .main-header { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 30px; flex-shrink: 0; gap: 20px; }
+        .main-header { height: 60px; background: white; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 20px; flex-shrink: 0; gap: 20px; }
+        .sidebar-toggle-btn { background: #f8fafc; border: 1px solid #e2e8f0; color: #64748b; padding: 8px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .sidebar-toggle-btn:hover { background: #fff1f2; color: #E30613; border-color: #ffe4e6; }
         .logo { font-size: 22px; font-weight: 900; }
         .logo-ivry { color: #E30613; }
         .logo-dsi { color: #003366; opacity: 0.8; }
