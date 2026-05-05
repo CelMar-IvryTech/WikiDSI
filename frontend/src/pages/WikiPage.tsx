@@ -36,6 +36,8 @@ const WikiPage: React.FC = () => {
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
   const [tocWidth, setTocWidth] = useState(220); // Largeur en pixels
   const [isDraggingTOC, setIsDraggingTOC] = useState(false);
+  const [explorerWidth, setExplorerWidth] = useState(280); // Largeur en pixels
+  const [isDraggingExplorer, setIsDraggingExplorer] = useState(false);
   const [editContentHTML, setEditContentHTML] = useState('');
   const [editContentMD, setEditContentMD] = useState('');
   const [originalContentHTML, setOriginalContentHTML] = useState('');
@@ -317,6 +319,11 @@ const WikiPage: React.FC = () => {
         const newWidth = window.innerWidth - e.clientX - 20; // 20px de padding/marge
         setTocWidth(Math.min(500, Math.max(150, newWidth)));
     }
+
+    if (isDraggingExplorer) {
+        const newWidth = e.clientX - 20; // 20px de padding/marge
+        setExplorerWidth(Math.min(500, Math.max(200, newWidth)));
+    }
   };
 
   const onGlobalMouseUp = () => {
@@ -324,12 +331,15 @@ const WikiPage: React.FC = () => {
       setIsResizing(false);
       setEditContentHTML(quillRef.current.getEditor().root.innerHTML);
     }
-    if (isDraggingSplit) {
-        setIsDraggingSplit(false);
-    }
-    if (isDraggingTOC) {
-        setIsDraggingTOC(false);
-    }
+    if (isDraggingSplit) setIsDraggingSplit(false);
+    if (isDraggingTOC) setIsDraggingTOC(false);
+    if (isDraggingExplorer) setIsDraggingExplorer(false);
+  };
+
+  const handleRenameEditor = () => {
+    if (!selectedFile) return;
+    const fileName = selectedFile.split('/').pop() || '';
+    setShowRenameModal({ show: true, oldPath: selectedFile, oldName: fileName });
   };
 
   const sortNodes = (nodes: FileNode[]): FileNode[] => {
@@ -477,8 +487,8 @@ const WikiPage: React.FC = () => {
       </header>
 
       <div className="main-layout">
-        <aside className="sidebar">
-          <div className="sidebar-inner">
+        <aside className={`sidebar ${isDraggingExplorer ? 'dragging' : ''}`} style={{ width: `${explorerWidth}px`, position: 'relative', overflow: 'visible' }}>
+          <div className="sidebar-inner" style={{ borderRadius: '20px', border: '1px solid #e2e8f0', height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <div className="sidebar-header">
               <span>PROCÉDURES</span>
               <div style={{ display: 'flex', gap: '6px' }}>
@@ -521,6 +531,7 @@ const WikiPage: React.FC = () => {
 
             <div className="tree-container">{renderTree(filterTree(tree))}</div>
           </div>
+          <div className="resizer-handle right-side" onMouseDown={() => setIsDraggingExplorer(true)}></div>
         </aside>
 
         <main className="content">
@@ -528,7 +539,12 @@ const WikiPage: React.FC = () => {
             {selectedFile ? (
               <div className="document-card">
                 <div className="doc-header">
-                  <div className="breadcrumb">{selectedFile.replace('.md', '')}</div>
+                  <div className="breadcrumb">
+                    {selectedFile.replace('.md', '')}
+                    <button className="action-btn-mini" style={{ marginLeft: '10px' }} onClick={handleRenameEditor} title="Renommer la procédure">
+                        <Edit2 size={14}/>
+                    </button>
+                  </div>
                   <div className="doc-actions">
                     {isEditing ? (
                       <div className="editing-toolbar">
@@ -815,9 +831,8 @@ const WikiPage: React.FC = () => {
             border-left: 1px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
         }
-        .resizer-handle.left {
+        .resizer-handle.left, .resizer-handle.right-side {
             position: absolute;
-            left: -14px;
             top: 50%;
             transform: translateY(-50%);
             height: 100px;
@@ -825,8 +840,14 @@ const WikiPage: React.FC = () => {
             border-radius: 10px;
             background: #e2e8f0;
             border: none;
+            z-index: 20;
         }
-        .resizer-handle.left:hover, .app-container.dragging .resizer-handle.left {
+        .resizer-handle.left { left: -14px; }
+        .resizer-handle.right-side { right: -14px; }
+        
+        .resizer-handle.left:hover, .resizer-handle.right-side:hover, 
+        .app-container.dragging .resizer-handle.left, 
+        .app-container.dragging .resizer-handle.right-side {
             background: #E30613;
         }
         .resizer-handle::after {
@@ -840,7 +861,7 @@ const WikiPage: React.FC = () => {
             background: #cbd5e1;
             border-radius: 10px;
         }
-        .resizer-handle.left::after {
+        .resizer-handle.left::after, .resizer-handle.right-side::after {
             height: 20px;
         }
         .resizer-handle:hover, .app-container.dragging .resizer-handle { 
@@ -851,7 +872,9 @@ const WikiPage: React.FC = () => {
             background: white;
         }
         
-        .editor-side { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background: #f8fafc; position: relative; min-height: 0; }
+        .sidebar { flex-shrink: 0; background: transparent; display: flex; flex-direction: column; }
+        .sidebar.dragging { user-select: none; }
+        .sidebar-inner { background: white; flex: 1; display: flex; flex-direction: column; }
         .side-label { padding: 8px 15px; font-size: 10px; font-weight: 900; color: #94a3b8; border-bottom: 1px solid #e2e8f0; background: white; flex-shrink: 0; }
         .quill { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
         .ql-container { flex: 1; overflow: hidden; display: flex; flex-direction: column; border: none !important; min-height: 0; }
