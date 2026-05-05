@@ -540,9 +540,16 @@ const WikiPage: React.FC = () => {
               <div className="document-card">
                 <div className="doc-header">
                   <div className="breadcrumb">
-                    {selectedFile.replace('.md', '')}
+                    {selectedFile.split('/').map((part, i, arr) => (
+                      <React.Fragment key={i}>
+                        <span className={i === arr.length - 1 ? 'breadcrumb-file' : 'breadcrumb-folder'}>
+                          {part.replace('.md', '')}
+                        </span>
+                        {i < arr.length - 1 && <span className="breadcrumb-separator">/</span>}
+                      </React.Fragment>
+                    ))}
                     <button className="action-btn-mini" style={{ marginLeft: '10px' }} onClick={handleRenameEditor} title="Renommer la procédure">
-                        <Edit2 size={14}/>
+                        <Edit2 size={16}/>
                     </button>
                   </div>
                   <div className="doc-actions">
@@ -826,7 +833,10 @@ const WikiPage: React.FC = () => {
         .content-inner { height: 100%; display: flex; flex-direction: column; }
         .document-card { flex: 1; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .doc-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
-        .breadcrumb { font-weight: 800; color: #94a3b8; font-size: 11px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .breadcrumb { color: #94a3b8; display: flex; align-items: center; gap: 4px; padding: 0; margin: 0; }
+        .breadcrumb-folder { font-weight: 500; font-size: 14px; text-transform: uppercase; opacity: 0.7; }
+        .breadcrumb-file { font-weight: 600; font-size: 18px; color: #1e293b; text-transform: none; margin-left: 4px; }
+        .breadcrumb-separator { font-weight: 400; font-size: 14px; margin: 0 4px; opacity: 0.5; }
         
         .editing-toolbar, .viewing-toolbar { display: flex; align-items: center; gap: 10px; }
         .action-btn-horizontal { height: 40px; white-space: nowrap; }

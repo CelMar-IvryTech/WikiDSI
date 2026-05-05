@@ -1,4 +1,4 @@
-Installation via l’agent FusionInventory
+# Installation via l’agent FusionInventory
 
 ## Étape 1 – Accéder au module FusionInventory
 
