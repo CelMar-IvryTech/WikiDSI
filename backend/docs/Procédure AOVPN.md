@@ -1,4 +1,4 @@
-# Groupe AD utilisateur : **AlwaysOnVPN-Users** => Installation du certificat d’authentification utilisateur
+# Installation du certificat VPN utilisateur
 
 A vérifier dans l’AD : Si l’agent fait bien parti de ce groupe.
 
