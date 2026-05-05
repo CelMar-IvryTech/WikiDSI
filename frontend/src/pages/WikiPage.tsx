@@ -576,19 +576,33 @@ const WikiPage: React.FC = () => {
                       <div className="side-label">VISUEL (DRAG & RESIZE)</div>
                       <div className="quill-wrapper" ref={wrapperRef} style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                         <div className="custom-quill-toolbar">
-                            <button className="ql-bold"></button>
-                            <button className="ql-italic"></button>
-                            <button className="ql-underline"></button>
-                            <select className="ql-header">
-                                <option value="1"></option>
-                                <option value="2"></option>
-                                <option value="3"></option>
-                                <option value=""></option>
+                            <select className="ql-header" defaultValue="">
+                                <option value="1">Grand Titre (H1)</option>
+                                <option value="2">Titre (H2)</option>
+                                <option value="3">Sous-titre (H3)</option>
+                                <option value="4">Petit titre (H4)</option>
+                                <option value="">Corps de texte</option>
                             </select>
-                            <button className="ql-list" value="ordered"></button>
-                            <button className="ql-list" value="bullet"></button>
-                            <button className="ql-link"></button>
-                            <button className="ql-clean"></button>
+                            <select className="ql-size" defaultValue="">
+                                <option value="small">Petit</option>
+                                <option value="">Normal</option>
+                                <option value="large">Grand</option>
+                                <option value="huge">Très grand</option>
+                            </select>
+                            <div className="toolbar-separator-mini"></div>
+                            <button className="ql-bold" title="Gras"></button>
+                            <button className="ql-italic" title="Italique"></button>
+                            <button className="ql-underline" title="Souligné"></button>
+                            <button className="ql-strike" title="Barré"></button>
+                            <div className="toolbar-separator-mini"></div>
+                            <select className="ql-align" defaultValue=""></select>
+                            <button className="ql-list" value="ordered" title="Liste numérotée"></button>
+                            <button className="ql-list" value="bullet" title="Liste à puces"></button>
+                            <button className="ql-blockquote" title="Citation"></button>
+                            <button className="ql-code-block" title="Bloc de code"></button>
+                            <div className="toolbar-separator-mini"></div>
+                            <button className="ql-link" title="Lien"></button>
+                            <button className="ql-clean" title="Effacer mise en forme"></button>
                             <button 
                                 className={`custom-toolbar-btn ${showMarkdown ? 'active' : ''}`}
                                 onClick={() => setShowMarkdown(!showMarkdown)}
@@ -816,6 +830,7 @@ const WikiPage: React.FC = () => {
         .editing-toolbar, .viewing-toolbar { display: flex; align-items: center; gap: 10px; }
         .action-btn-horizontal { height: 40px; white-space: nowrap; }
         .toolbar-separator { width: 1px; height: 25px; background: #e2e8f0; margin: 0 5px; }
+        .toolbar-separator-mini { width: 1px; height: 18px; background: #e2e8f0; margin: 0 8px; }
 
         .scrollable-container { flex: 1; overflow-y: auto; min-height: 0; padding-right: 5px; }
         .split-editor { flex: 1; min-height: 0; position: relative; }
