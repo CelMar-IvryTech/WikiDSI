@@ -34,6 +34,8 @@ const WikiPage: React.FC = () => {
   const [showMarkdown, setShowMarkdown] = useState(false);
   const [splitWidth, setSplitWidth] = useState(50); // Pourcentage de l'éditeur visuel
   const [isDraggingSplit, setIsDraggingSplit] = useState(false);
+  const [tocWidth, setTocWidth] = useState(220); // Largeur en pixels
+  const [isDraggingTOC, setIsDraggingTOC] = useState(false);
   const [editContentHTML, setEditContentHTML] = useState('');
   const [editContentMD, setEditContentMD] = useState('');
   const [originalContentHTML, setOriginalContentHTML] = useState('');
@@ -310,6 +312,11 @@ const WikiPage: React.FC = () => {
             setSplitWidth(Math.min(85, Math.max(15, newWidth)));
         }
     }
+
+    if (isDraggingTOC) {
+        const newWidth = window.innerWidth - e.clientX - 20; // 20px de padding/marge
+        setTocWidth(Math.min(500, Math.max(150, newWidth)));
+    }
   };
 
   const onGlobalMouseUp = () => {
@@ -319,6 +326,9 @@ const WikiPage: React.FC = () => {
     }
     if (isDraggingSplit) {
         setIsDraggingSplit(false);
+    }
+    if (isDraggingTOC) {
+        setIsDraggingTOC(false);
     }
   };
 
@@ -627,7 +637,8 @@ const WikiPage: React.FC = () => {
           </div>
         </main>
 
-        <aside className="sidebar toc-sidebar">
+        <aside className={`sidebar toc-sidebar ${isDraggingTOC ? 'dragging' : ''}`} style={{ width: `${tocWidth}px` }}>
+            <div className="resizer-handle left" onMouseDown={() => setIsDraggingTOC(true)}></div>
             <div className="sidebar-inner">
                 <div className="sidebar-header">
                     <span>SOMMAIRE</span>
@@ -733,8 +744,8 @@ const WikiPage: React.FC = () => {
         .active-path-indicator { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: #64748b; background: #fff1f2; padding: 6px 12px; border-radius: 8px; border: 1px solid #ffe4e6; }
         .active-path-indicator span { color: #E30613; }
         .active-path-indicator button { background: none; border: none; color: #f43f5e; cursor: pointer; display: flex; padding: 2px; }
-        .main-layout { display: flex; flex: 1; overflow: hidden; padding: 20px; gap: 20px; }
-        .sidebar { width: 280px; flex-shrink: 0; background: white; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; }
+        .main-layout { display: flex; flex: 1; overflow: hidden; padding: 20px; gap: 0; }
+        .sidebar { width: 280px; flex-shrink: 0; background: white; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; margin-right: 20px; }
         .sidebar-header { padding: 15px; border-bottom: 1px solid #f1f5f9; font-weight: 800; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
         .sidebar-action-btn { background: #fff1f2; color: #E30613; border: none; padding: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .sidebar-action-btn:hover { background: #E30613; color: white; transform: scale(1.1); }
@@ -760,7 +771,8 @@ const WikiPage: React.FC = () => {
         .action-btn-mini:hover { background: #fff1f2; color: #E30613; }
         .delete-btn { background: transparent; border: none; color: #94a3b8; cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s; display: flex; }
         .delete-btn:hover { background: #fff1f2; color: #E30613; }
-        .toc-sidebar { width: 220px; flex-shrink: 0; }
+        .toc-sidebar { flex-shrink: 0; background: white; border-radius: 20px; border: 1px solid #e2e8f0; display: flex; flex-direction: row !important; overflow: visible; position: relative; }
+        .toc-sidebar .sidebar-inner { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .toc-container { flex: 1; overflow-y: auto; padding: 10px; }
         .toc-item { 
             padding: 8px 12px; 
@@ -779,7 +791,7 @@ const WikiPage: React.FC = () => {
         .toc-item.level-3 { margin-left: 20px; font-size: 12px; opacity: 0.8; }
         .toc-empty { padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; font-style: italic; }
         
-        .content { flex: 1; height: 100%; overflow: hidden; }
+        .content { flex: 1; height: 100%; overflow: hidden; margin-right: 0; }
         .content-inner { height: 100%; display: flex; flex-direction: column; }
         .document-card { flex: 1; background: white; border-radius: 20px; border: 1px solid #e2e8f0; padding: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
         .doc-header { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
@@ -803,6 +815,20 @@ const WikiPage: React.FC = () => {
             border-left: 1px solid #e2e8f0;
             border-right: 1px solid #e2e8f0;
         }
+        .resizer-handle.left {
+            position: absolute;
+            left: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 100px;
+            width: 10px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            border: none;
+        }
+        .resizer-handle.left:hover, .app-container.dragging .resizer-handle.left {
+            background: #E30613;
+        }
         .resizer-handle::after {
             content: "";
             position: absolute;
@@ -813,6 +839,9 @@ const WikiPage: React.FC = () => {
             height: 30px;
             background: #cbd5e1;
             border-radius: 10px;
+        }
+        .resizer-handle.left::after {
+            height: 20px;
         }
         .resizer-handle:hover, .app-container.dragging .resizer-handle { 
             background: #E30613; 
